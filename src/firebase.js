@@ -11,22 +11,22 @@ let firebaseConfig = {
     messagingSenderId: "171946474426",
     appId: "1:171946474426:web:f639055156ba7373063b83",
     measurementId: "G-W8HGNFK46P"
-  };
+};
 
-class Firebase{
-    constructor(){
+class Firebase {
+    constructor() {
         app.initializeApp(firebaseConfig);
 
         this.app = app.database();
     }
 
-    login(email, password){
+    login(email, password) {
         return app.auth().signInWithEmailAndPassword(email, password)
     }
 
-    async register(nome, email, password){
+    async register(nome, email, password) {
         await app.auth().createUserWithEmailAndPassword(email, password)
-        
+
         const uid = app.auth().currentUser.uid;
 
         return app.database().ref('usuarios').child(uid).set({
@@ -34,13 +34,13 @@ class Firebase{
         })
     }
 
-    isInitialized(){
+    isInitialized() {
         return new Promise(resolve => {
             app.auth().onAuthStateChanged(resolve);
         })
     }
 
-    getCurrent(){
+    getCurrent() {
         return app.auth().currentUser && app.auth().currentUser.email
     }
 }

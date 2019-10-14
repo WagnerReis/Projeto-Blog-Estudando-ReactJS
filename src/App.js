@@ -6,6 +6,7 @@ import Home from './components/Home';
 import Header from './components/Header';
 import Login from './components/Login';
 import DashBoard from './components/Dashboard';
+import Register from './components/Register';
 import './global.css';
 
 class App extends Component{
@@ -29,6 +30,7 @@ class App extends Component{
           <Route exact path="/" component={Home} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/dashboard" component={DashBoard} />
+          <Route exact path="/register" component={Register} />
         </Switch>
       </BrowserRouter>
     ) : (
