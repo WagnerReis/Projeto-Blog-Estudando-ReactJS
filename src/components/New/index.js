@@ -12,7 +12,8 @@ class New extends Component {
             imagem: null,
             url: '',
             descricao: '',
-            alert: ''
+            alert: '',
+            progress: 0
         };
 
         this.cadastrar = this.cadastrar.bind(this);
@@ -30,12 +31,16 @@ class New extends Component {
     cadastrar = async (e) => {
         e.preventDefault();
 
-        if (this.state.titulo !== '' && this.state.imagem !== '' && this.state.descricao !== '') {
+        if (this.state.titulo !== '' &&
+          this.state.imagem !== '' &&
+          this.state.descricao !== '' &&
+          this.state.image !== null &&
+          this.state.url !== '') {
             let posts = firebase.app.ref('posts');
             let chave = posts.push().key;
             await posts.child(chave).set({
                 titulo: this.state.titulo,
-                image: this.state.imagem,
+                image: this.state.url,
                 descricao: this.state.descricao,
                 autor: localStorage.nome
             });
@@ -71,17 +76,26 @@ class New extends Component {
         .ref(`images/${currentUid}/${imagem.name}`)
         .put(imagem);
 
-        /*await uploadTaks.on('state_changed',
+        await uploadTaks.on('state_changed',
         (snapshot) => {
             //progress
-        }),
+            const progress = Math.round(
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            this.setState({progress});
+        },
         (error)=>{
             //error
             console.log('Error imagem: ' + error);
         },
         ()=>{
             //sucesso!
-        }*/
+            firebase.storage.ref(`images/${currentUid}`)
+            .child(imagem.name).getDownloadURL()
+            .then(url => {
+                this.setState({url: url});
+            })
+        })
     }
 
     render() {
@@ -96,6 +110,11 @@ class New extends Component {
 
                     <input type="file"
                         onChange={this.handleFile} /><br />
+                    {this.state.url !== '' ? 
+                     <img src={this.state.url} width="250" height="150" alt="Capa do post"/>
+                     : 
+                     <progress value={this.state.progress} max="100"/>
+                    }
 
                     <label>Titulo: </label><br />
                     <input type="text" placeholder="Nome do post" value={this.state.titulo} autoFocus
